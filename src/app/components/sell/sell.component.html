@@ -1,0 +1,200 @@
+<p-toast></p-toast>
+
+<div class="card">
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button pButton pRipple [label]="Delete" icon="pi pi-arrow-left" class="p-button-success" (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="products" [rows]="10" [paginator]="true" [globalFilterFields]="['productname','product.productname','product.productname','productname']"
+        [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">ادارة المنتجات</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event,'contains')" placeholder="بحث..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="id">الرقم<p-sortIcon field="id"></p-sortIcon></th>
+                <th pSortableColumn="productname">اسم المنتج <p-sortIcon field="productname"></p-sortIcon></th>
+                <th pSortableColumn="description">الوصف</th>
+                <th pSortableColumn="type">النوع</th>
+                <th pSortableColumn="price">السعر <p-sortIcon field="price"></p-sortIcon></th>
+                <th pSortableColumn="quantity">الكمية <p-sortIcon field="quantity"></p-sortIcon></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                </td>
+                <td>{{product.id}}</td>
+                <td>{{product.productname}}</td>
+                <td>{{product.description}}</td>
+                <td>{{product.type}}</td>
+                <td>{{product.price}}</td>
+                <td>{{product.quantity}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                يوجد عدد  {{products ? products.length : 0 }} من المنتجات.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+
+<p-dialog [(visible)]="nameDialog" [style]="{width: '70%'}" header="انشاء الفاتورة" [modal]="true" styleClass="p-fluid">
+        <ng-template let-product pTemplate="item">
+            <div>
+                    <input pInputText type="text" [(ngModel)]="customer" name="customer" id="customer" placeholder="الرجاء ادخال اسم العميل" required autofocus />
+            </div>
+            <button pButton pRipple label="متابعة" icon="pi pi-check" class="p-button-text" (click)="customerName(customer)"></button>
+            <button pButton pRipple label="الغاء" icon="pi pi-times" class="p-button-text" (click)="hideDialog2()"></button>
+        </ng-template>  
+    </p-dialog>
+
+
+
+<p-dialog [(visible)]="productDialog" [style]="{width: '70%'}" header="تفاصيل الفاتورة" [modal]="true" styleClass="p-fluid">
+    <p-orderList [value]="selectedProducts">
+        <ng-template let-product pTemplate="item">
+            <div>
+                <img src="../../../assets//logo.png" style="display:inline-block;margin:2px 0 2px 2px" width="48">
+                <div style="font-size:20px; font:bolder; float:right;margin:15px 5px 0 0">{{product.productname}} - {{product.description}} - {{product.type}} <br> {{product.price}}ج.س 
+                    <div class="p-field p-col">
+                        <label for="quantity">الكمية</label>
+                        <input type="number" pInputText id="quantity" [(ngModel)]="product.quantity" required autofocus />
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-orderList>
+    <button pButton pRipple label="متابعة" icon="pi pi-check" class="p-button-text" (click)="createInvoice(selectedProducts,quan)"></button>
+            <button pButton pRipple label="الغاء" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+</p-dialog>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+
+
+
+
+
+
+
+
+<p-dialog  [(visible)]="GENERATOR" id="print-section">
+    <img src="../../../assets/logo.png" width="10%" height="10%"/>
+<nav class="navbar navbar-expand-sm navbar-dark bg-secondary">    
+    <a class="navbar-brand" href="#">الفاتورة</a>    
+</nav>    
+    
+<div class="container-fluid pt-2">    
+    <div class="row">    
+        <div class="col-md-8">    
+            <div class="card border-secondary">    
+                <div class="card-body">    
+                    <h4 class="card-title">بيانات العميل</h4>    
+                    <div class="row">    
+                        <div class="col-md-8">    
+                            <div class="form-group">    
+                                <label for="name">اسم العميل</label>    
+                                <input type="text" class="form-control" name="customer" id="customer" [(ngModel)]="customer">    
+                            </div>    
+                        </div>    
+                    </div>    
+                </div>    
+            </div>    
+            <div class="card border-secondary mt-2">    
+                <div class="card-body">    
+                    <h4 class="card-title d-flex justify-content-between">بيانات الطلب </h4>    
+                    <div class="row">    
+                        <table class="table" *ngFor="let product of selectedProducts" >    
+                            <thead>    
+                                <tr>    
+                                    <th width="25%">اسم المنتج</th>    
+                                    <th width="25%">سعر</th>    
+                                    <th width="25%">الكمية</th>    
+                                    <th width="25%">الاجمالي</th>    
+                                </tr>    
+                            </thead>    
+                            <tbody>    
+                                <tr>    
+                                    <td scope="row">    
+                                        <input type="text" class="form-control" name="productName" id="productName" [(ngModel)]="product.productname">    
+                                    </td>    
+                                    <td>    
+                                        <input type="number" class="form-control" name="price" id="price" [(ngModel)]="product.price">    
+                                    </td>    
+                                    <td>    
+                                        <input type="number" class="form-control" name="quantity" id="quantity"[(ngModel)]="product.quantity">    
+                                    </td>    
+                                    <td>
+                                        <input type="number" disabled="true" class="form-control" name="productTotal" id="productTotal"[(ngModel)]="product.quantity * product.price">    
+                                    </td>    
+                                </tr>    
+                            </tbody>    
+                        </table>    
+                    </div>
+
+                <div class="card border-secondary">    
+                    <div class="card-body">    
+                        <h4 class="card-title">المجموع الفرعي</h4>   
+                        <input type="number" disabled="true" class="form-control" name="subtotal" id="subtotal"  [(ngModel)]="subTotal"/>
+
+                    </div>
+                </div>
+           
+
+                <div class="card border-secondary mt-2">    
+                    <div class="card-body">    
+                        <h4 class="card-title d-flex justify-content-between">التخفيض والعمولة  </h4>    
+                        <div class="form-group">    
+                            <label for="discount">نسبة التخفيض</label>    
+                            <input type="number" class="form-control" name="discount" id="discount" [(ngModel)]="discount" (change)="Discount(discount)">    
+                        </div>    
+                        <!-- <div class="form-group">    
+                            <label for="comission">نسبة العمولة</label>    
+                            <input type="number" class="form-control" name="comission" id="comission" [(ngModel)]="comission" (change)="total = 1000 + 1">     
+                        </div>     -->
+                    </div>
+                </div>
+
+                <div class="card border-secondary">    
+                    <div class="card-body">    
+                        <h4 class="card-title">المجموع الكلي</h4>   
+                        <input type="number" disabled="true" class="form-control" name="total" id="total" [(ngModel)]="total"  />
+
+                    </div>
+                </div>
+
+            </div>    
+            </div>    
+            <div class="card border-secondary mt-2">    
+                <div class="card-body">    
+                    <h4 class="card-title">البنود و الأحكام </h4>    
+                    <div class="form-group">    
+                        <textarea class="form-control" name="additionalDetails" rows="3">اتفاقية الشروط والأحكام هي الاتفاقية التي تتضمن الشروط والقواعد والمبادئ التوجيهية للسلوك المقبول والأقسام المفيدة الأخرى التي يجب أن يوافق عليها العملاء من أجل إجراء الدفع</textarea>    
+                    </div>    
+                </div>    
+            </div>    
+        </div>    
+        <div class="col-md-4">    
+            <button type="button" name="download" class="btn btn-secondary btn-lg btn-block" ngxPrint printSectionId="print-section" [useExistingCss]="true" (click)="saveInvoice(customer)">تحميل الفاتورة</button>    
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" name="save" class="btn btn-secondary btn-lg btn-block" (click)="saveInvoice(customer)" >حفظ وبيع</button>    
+        </div>    
+    </div>    
+</div>  
+</p-dialog>

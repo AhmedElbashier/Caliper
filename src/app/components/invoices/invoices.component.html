@@ -1,0 +1,95 @@
+<p-toast></p-toast>
+
+<div class="card">
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="اضافة" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button> &nbsp;&nbsp;&nbsp;&nbsp;
+            <button pButton pRipple [label]="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedInvoices()" [disabled]="!selectedInvoices || !selectedInvoices.length"></button>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+            <button pButton pRipple label="تصدير" icon="pi pi-upload" class="p-button-help"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="invoices" [rows]="10" [paginator]="true" [globalFilterFields]="['cusname','invoice.cusname','representative.name','status']"
+        [(selection)]="selectedInvoices" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">ادارة المنتجات</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event,'contains')" placeholder="بحث..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="invoiceId">رقم الفاتورة <p-sortIcon field="id"></p-sortIcon></th>
+                <th pSortableColumn="cusname">اسم العميل <p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="discount">التخفيض <p-sortIcon field="discount"></p-sortIcon></th>
+                <th pSortableColumn="total">المجموع <p-sortIcon field="total"></p-sortIcon></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-invoice>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="invoice"></p-tableCheckbox>
+                </td>
+                <td>{{invoice.invoiceId}}</td>
+                <td>{{invoice.cusname}}</td>
+                <td>{{invoice.discount}}</td>
+                <td>{{invoice.total}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-print" class="p-button-rounded p-button-success p-mr-2" (click)="printInvoice(invoice)"></button>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editInvoice(invoice)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteInvoice(invoice)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                يوجد عدد  {{invoices ? invoices.length : 0 }} الفواتير.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="invoiceDialog" [style]="{width: '450px'}" header="تفاصيل المنتج" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="invoiceId">رقم الفاتورة</label>
+            <input type="text" pInputText id="invoiceId" [(ngModel)]="invoice.invoiceId" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !invoice.cusname">Name is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="cusname">اسم العميل</label>
+            <input type="text" pInputText id="cusname" [(ngModel)]="invoice.cusname" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !invoice.cusname">Name is required.</small>
+        </div>
+        <div class="p-field">
+            
+            <div class="p-field p-col">
+                <label for="discount">التخفيض</label>
+                <input type="text" pInputText id="discount" [(ngModel)]="invoice.discount" required autofocus />
+            </div>
+            <div class="p-field p-col">
+                <label for="total">المجموع</label>
+                <input type="text" pInputText id="total" [(ngModel)]="invoice.total" required autofocus />
+            </div>
+
+        </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="حفظ" icon="pi pi-check" class="p-button-text" (click)="saveInvoice(invoice)"></button>
+        <button pButton pRipple label="الغاء" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

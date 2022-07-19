@@ -1,1 +1,7 @@
-<p-menubar [model]="items"></p-menubar>
+<h1>كاليـــبر الهندسية - Caliper Engineering</h1>
+<p-menubar [model]="items">
+    <ng-template pTemplate="start">
+    <img src="assets/logo.png" height="40" class="mr-2">
+</ng-template>
+</p-menubar>
+<router-outlet></router-outlet>

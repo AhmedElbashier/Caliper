@@ -5,27 +5,16 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   constructor(private router:Router){}
+  username!:string;
+  password!:string;
   ngOnInit(): void {
   }
-  form: UntypedFormGroup = new UntypedFormGroup({
-    username: new UntypedFormControl(''),
-    password: new UntypedFormControl(''),
-  });
-
   submit() {
-    if (this.form.valid) {
-      this.submitEM.emit(this.form.value);
-
-    }
-
     this.router.navigate(["dashboard"]);
 
+    }
   }
-  @Input() error: string | null | undefined;
-
-  @Output() submitEM = new EventEmitter();
-}

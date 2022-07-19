@@ -1,0 +1,27 @@
+.sizes {
+    .p-inputtext {
+        display: block;
+        margin-bottom: .5rem;
+        background-color: black;
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.p-field * {
+    display: block;
+    background-color: black;
+
+}
+.bod{
+    text-align: center;
+    margin: 7%;
+    padding: 8%;
+    background-image: url("../../../assets/logo2.png");
+    height: 600px; /* You must set a specified height */
+    width: 1750px; /* You must set a specified height */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size:contain;
+}

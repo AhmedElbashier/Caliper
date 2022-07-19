@@ -11,28 +11,21 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
       this.items = [
-          {
-              label: 'File',
-              items: [{
-                      label: 'New', 
-                      icon: 'pi pi-fw pi-plus',
-                      items: [
-                          {label: 'Project'},
-                          {label: 'Other'},
-                      ]
-                  },
-                  {label: 'Open'},
-                  {label: 'Quit'}
-              ]
+          { 
+            label: 'الرئيسية', icon: 'pi pi-fw pi-home',routerLink:'dashboard/main'
           },
-          {
-              label: 'Edit',
-              icon: 'pi pi-fw pi-pencil',
-              items: [
-                  {label: 'Delete', icon: 'pi pi-fw pi-trash'},
-                  {label: 'Refresh', icon: 'pi pi-fw pi-refresh'}
-              ]
-          }
+           {   
+            label: 'المنتجات', icon: 'pi pi-fw pi-tags',routerLink:'dashboard/products'
+            },
+            {label: 'الفواتير', icon: 'pi pi-fw pi-dollar',routerLink:'dashboard/invoices'},
+            {label: 'المستخدمين', icon: 'pi pi-fw pi-users',routerLink:'dashboard/users',
+            },
+            {
+              label: 'نافذة البيع', icon: 'pi pi-fw pi-shopping-bag', routerLink:'dashboard/sell'
+            },
+            {
+            label: 'تسجيل الخروج', icon: 'pi pi-fw pi-sign-out', routerLink:'/login'
+            }
       ];
   }
 }
